@@ -9,6 +9,14 @@ from shutil import copy2
 
 
 def install_dependencies():
+    
+    print("================== Adjust SWAP Space ==================")
+    os.system(" sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024")
+    os.system("sudo sudo /sbin/mkswap /var/swap.1")
+    os.system("sudo chmod 600 /var/swap.1")
+    os.system("sudo /sbin/swapon /var/swap.1")
+    print("================== Completed Adjusting SWAP Space ==================")
+    
     print("================== Start Installing PIP ==================")
     os.system("sudo apt install python3-pip -y")
     print("================== Completed Installing PIP ==================")
@@ -72,6 +80,13 @@ def edit_alsa_conf():
     print("================== Completed replacing text in alsa.conf ==================")
 
 
+    
+    print("================== Remove Temp SWAP Space ==================") 
+    os.system("sudo /sbin/swapoff /var/swap.1")
+    os.system("sudo rm /var/swap.1")
+    print("================== Completed Removal of temp SWAP Space ==================")
+    
+    
 install_dependencies()
 replace_asound()
 edit_alsa_conf()

@@ -8,6 +8,7 @@ import microphone
 import dsp
 import led
 import sys
+from random import randrange
 
 visualization_type = sys.argv[1]
 
@@ -20,15 +21,12 @@ _fps = dsp.ExpFilter(val=config.FPS, alpha_decay=0.2, alpha_rise=0.2)
 
 def frames_per_second():
     """Return the estimated frames per second
-
     Returns the current estimate for frames-per-second (FPS).
     FPS is estimated by measured the amount of time that has elapsed since
     this function was previously called. The FPS estimate is low-pass filtered
     to reduce noise.
-
     This function is intended to be called one time for every iteration of
     the program's main loop.
-
     Returns
     -------
     fps : float
@@ -67,15 +65,12 @@ def _normalized_linspace(size):
 
 def interpolate(y, new_length):
     """Intelligently resizes the array by linearly interpolating the values
-
     Parameters
     ----------
     y : np.array
         Array that should be resized
-
     new_length : int
         The length of the new interpolated array
-
     Returns
     -------
     z : np.array
@@ -175,7 +170,71 @@ def visualize_spectrum(y):
     r = np.concatenate((r[::-1], r))
     g = np.concatenate((g[::-1], g))
     b = np.concatenate((b[::-1], b))
-    output = np.array([r, g,b]) * 255
+    
+    #Code for randomizing the colour of the spectrum
+    primary = b
+    secondary = g
+    tertiary = r
+    config_mode = config.SPEC_ORDER
+    
+
+    if config.CYCLE_COUNT == 0:
+        #Set if random mode is truly random or cycles through colours in order
+        if config.RAND_MODE == "random":
+            config.RAND_NUM = randrange(5)
+        elif config.RAND_MODE == "wheel":
+            if config.RAND_NUM >= 5:
+                config.RAND_NUM = 0
+            else:
+                config.RAND_NUM += 1
+        config.CYCLE_COUNT += 1
+    elif config.CYCLE_COUNT >= config.RAND_FREQ:
+        config.CYCLE_COUNT = 0
+    else:
+        config.CYCLE_COUNT += 1
+
+    #If SPEC_ORDER is set to "rand"
+    if config.SPEC_ORDER == "rand":
+        if config.RAND_NUM == 0:
+            config_mode = "rgb"
+        elif config.RAND_NUM == 1:
+            config_mode = "rgb"
+        elif config.RAND_NUM == 2:
+            config_mode = "grb"
+        elif config.RAND_NUM == 3:
+            config_mode = "gbr"
+        elif config.RAND_NUM == 4:
+            config_mode = "bgr"
+        elif config.RAND_NUM == 5:
+            config_mode = "brg"
+
+    #If SPEC_ORDER is set via rgb (in any combination)
+    if config_mode == "rbg":
+        primary = r
+        secondary = b
+        tertiary = b
+    elif config_mode == "rgb":
+        primary = r
+        secondary = g
+        tertiary = b
+    elif config_mode == "grb":
+        primary = g
+        secondary = r
+        tertiary = b
+    elif config_mode == "gbr":
+        primary = g
+        secondary = b
+        tertiary = r
+    elif config_mode == "bgr":
+        primary = b
+        secondary = g
+        tertiary = r
+    elif config_mode == "brg":
+        primary = b
+        secondary = r
+        tertiary = g
+
+    output = np.array([tertiary, secondary, primary]) * 255
     return output
 
 

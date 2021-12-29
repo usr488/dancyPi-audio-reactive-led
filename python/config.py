@@ -103,3 +103,36 @@ N_ROLLING_HISTORY = 2
 
 MIN_VOLUME_THRESHOLD = 1e-7
 """No music visualization displayed if recorded audio volume below threshold"""
+
+
+#OPTIONS FOR SPECTRUM MODE COLOURS
+
+"""
+These are the options for the spectrum colour mode added by Zherit
+
+SPEC_ORDER can be any combination of the letters r, g, and b written as "xyz"
+where x is the priority colour, y is the secondary, and z is tertiary. You must
+have unique entries for x y and z ie. "rrb" will NOT work. You can also enter
+"rand" for the colours to be randomized.
+
+RAND_MODE can be set to "random" or "wheel" depending on if you want a truly
+random colour sequence or you would like to cycle through all options one
+at a time. *NOTE: SPEC_ORDER must be set to "rand" for this to work
+
+RAND_FREQ sets the frequency at which to change the colours in "rand" mode.
+It is based off of FPS so if your FPS is set to 50 then changing colours
+every half second would be RAND_FREQ = 25. *NOTE: SPEC_ORDER must be set to
+"rand" for this to work
+
+RAND_NUM and CYCLE_COUNT are used by the program as variables. DO NOT TOUCH THESE
+
+
+"""
+SPEC_ORDER = "bgr"
+RAND_MODE = "wheel"
+RAND_FREQ = 15
+
+
+#DO NOT TOUCH
+RAND_NUM = 0
+CYCLE_COUNT = 0
